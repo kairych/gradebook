@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 from ..database import Base
 
@@ -11,6 +10,4 @@ class Student(Base):
     first_name = Column(String)
     last_name = Column(String)
     email = Column(String)
-
-    scores = relationship("Score", secondary='student_scores', back_populates="students")
-
+    score_id = Column(Integer, ForeignKey("scores.id"))
