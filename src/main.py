@@ -7,5 +7,5 @@ app = FastAPI(
     title="Online grades book"
 )
 
-app.include_router(scores_router)
 app.include_router(students_router)
+app.include_router(scores_router)

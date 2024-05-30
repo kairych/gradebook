@@ -1,9 +1,22 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 
 
-class ScoreSchema(BaseModel):
+class ScoreBase(BaseModel):
+    score: int
+    student_id: Optional[int] = None
+
+    class Config:
+        orm_mode = True
+
+
+class ScoreRead(BaseModel):
     id: int
     score: int
-    created_at: datetime
-    updated_at: datetime
+    student_id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
