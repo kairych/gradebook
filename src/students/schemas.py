@@ -3,15 +3,6 @@ from pydantic import BaseModel
 from ..scores.schemas import ScoreRead
 
 
-# class StudentBase(BaseModel):
-#     first_name: str
-#     last_name: str
-#     email: str
-#
-#     class Config:
-#         orm_mode = True
-
-
 class StudentCreate(BaseModel):
     first_name: str
     last_name: str

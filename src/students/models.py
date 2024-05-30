@@ -12,7 +12,7 @@ class Student(Base):
     email = Column(String, unique=True, index=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, onupdate=func.now(), nullable=True)
-    scores = relationship("Score", back_populates="student")
+    scores = relationship("Score", back_populates="student", lazy="selectin")
 
     def __repr__(self):
         return f"{self.first_name} {self.last_name}"
