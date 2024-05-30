@@ -15,6 +15,19 @@ router = APIRouter(
 
 @router.post("/", response_model=ScoreRead)
 async def add_score(score: ScoreBase, session: AsyncSession = Depends(get_async_session)):
+    """
+    Add a new score.
+
+    Parameters:
+    - `score` (ScoreBase): The score data to be created.
+    - `session` (AsyncSession): A database session.
+
+    Returns:
+    - `ScoreRead`: The created score object.
+
+    Raises:
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         new_score = ScoreModel(score=score.score, student_id=score.student_id)
         session.add(new_score)
@@ -27,6 +40,20 @@ async def add_score(score: ScoreBase, session: AsyncSession = Depends(get_async_
 
 @router.get("/{score_id}", response_model=ScoreRead)
 async def get_score(score_id: int, session: AsyncSession = Depends(get_async_session)):
+    """
+    Read a score by ID.
+
+    Parameters:
+    - `score_id` (int): The ID of the score to retrieve.
+    - `session` (AsyncSession): A database session.
+
+    Returns:
+    - `ScoreRead`: A retrieved score data.
+
+    Raises:
+    - `HTTPException` 404: If the score with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         stmt = select(ScoreModel).where(ScoreModel.id == score_id)
         result = await session.execute(stmt)
@@ -44,6 +71,21 @@ async def get_score(score_id: int, session: AsyncSession = Depends(get_async_ses
 
 @router.patch("/{score_id}", response_model=ScoreRead)
 async def update_score(score_id: int, score: ScoreBase, session: AsyncSession = Depends(get_async_session)):
+    """
+    Update a score by its ID.
+
+    Parameters:
+    - `score_id` (int): The ID of the score to be updated.
+    - `score` (ScoreBase): New data for the score.
+    - `session` (AsyncSession, optional): A database session.
+
+    Returns:
+    - `ScoreRead`: The updated score data.
+
+    Raises:
+    - `HTTPException` 404: If the score with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         query = await session.execute(select(ScoreModel).where(ScoreModel.id == score_id))
         existing_score = query.scalars().first()
@@ -64,6 +106,20 @@ async def update_score(score_id: int, score: ScoreBase, session: AsyncSession = 
 
 @router.delete("/{score_id}")
 async def delete_score(score_id: int, session: AsyncSession = Depends(get_async_session)):
+    """
+    Delete a score by its ID.
+
+    Parameters:
+    - `score_id` (int): The ID of the score to be deleted.
+    - `session` (AsyncSession, optional): A database session .
+
+    Returns:
+    - `dict`: A message confirming the deletion.
+
+    Raises:
+    - `HTTPException` 404: If the score with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         query = await session.execute(select(ScoreModel).where(ScoreModel.id == score_id))
         score = query.scalars().first()

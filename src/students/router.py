@@ -16,6 +16,19 @@ router = APIRouter(
 
 @router.post("/", response_model=StudentRead)
 async def add_student(student: StudentCreate, session: AsyncSession = Depends(get_async_session)):
+    """
+    Add a new student.
+
+    Parameters:
+    - `student` (StudentCreate): The student data to be created.
+    - `session` (AsyncSession): A database session.
+
+    Returns:
+    - `StudentRead`: The created student object.
+
+    Raises:
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         new_student = StudentModel(**student.dict())
         session.add(new_student)
@@ -31,6 +44,20 @@ async def add_student(student: StudentCreate, session: AsyncSession = Depends(ge
 
 @router.get("/{student_id}", response_model=StudentRead)
 async def get_student(student_id: int, session: AsyncSession = Depends(get_async_session)):
+    """
+    Read a student by ID.
+
+    Parameters:
+    - `student_id` (int): The ID of the student to retrieve.
+    - `session` (AsyncSession): A database session.
+
+    Returns:
+    - `StudentRead`: A retrieved student data.
+
+    Raises:
+    - `HTTPException` 404: If the student with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         stmt = select(StudentModel).options(selectinload(StudentModel.scores)).where(StudentModel.id == student_id)
         result = await session.execute(stmt)
@@ -48,6 +75,21 @@ async def get_student(student_id: int, session: AsyncSession = Depends(get_async
 
 @router.patch("/{student_id}", response_model=StudentRead)
 async def update_student(student_id: int, student: StudentUpdate, session: AsyncSession = Depends(get_async_session)):
+    """
+    Update a student by its ID.
+
+    Parameters:
+    - `student_id` (int): The ID of the student to be updated.
+    - `student` (StudentUpdate): New data for the student.
+    - `session` (AsyncSession, optional): A database session.
+
+    Returns:
+    - `StudentRead`: The updated student data.
+
+    Raises:
+    - `HTTPException` 404: If the student with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         stmt = select(StudentModel).options(selectinload(StudentModel.scores)).where(StudentModel.id == student_id)
         result = await session.execute(stmt)
@@ -70,6 +112,20 @@ async def update_student(student_id: int, student: StudentUpdate, session: Async
 
 @router.delete("/{student_id}")
 async def delete_student(student_id: int, session: AsyncSession = Depends(get_async_session)):
+    """
+    Delete a student by its ID.
+
+    Parameters:
+    - `student_id` (int): The ID of the student to be deleted.
+    - `session` (AsyncSession, optional): A database session .
+
+    Returns:
+    - `dict`: A message confirming the deletion.
+
+    Raises:
+    - `HTTPException` 404: If the student with the given ID is not found.
+    - `HTTPException` 500: If there is an internal server error.
+    """
     try:
         stmt = select(StudentModel).where(StudentModel.id == student_id)
         result = await session.execute(stmt)
